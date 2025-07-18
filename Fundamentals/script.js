@@ -2,7 +2,7 @@ let js = "amazing";
 let result = 40 + 8 + 23 - 10;
 console.log(result);
 
-let firstName = "Slooow Guy"
+//let firstName = "Slooow Guy"
 
 console.log(firstName); 
 
@@ -24,14 +24,14 @@ console.log(firstName);
 
 console.log(typeof true); 
 
-/**
- * Const vs let vs var
- * 
- * let : variable can be mutated at will; 
- * 
- * const: creates an immutable variable. 
- * 
- * var: legacy way of writing let. 
+/*
+  Const vs let vs var
+  
+  let : variable can be mutated at will; 
+  
+  const: creates an immutable variable. 
+  
+  var: legacy way of writing let. 
  */
 
 // Basix Operators
@@ -39,3 +39,4 @@ console.log(typeof true);
  const ageJohn = now - 1991; 
  const ageMia = now - 1994;
  console.log(ageJohn, ageMia); 
+
