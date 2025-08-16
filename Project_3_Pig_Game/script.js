@@ -26,10 +26,9 @@ newGameButtonDom.addEventListener('click', newGame);
 // Setting start conditions
 score0Dom.textContent = scores[0]; 
 score1Dom.textContent = scores[1];
+
 // diceDom.classList.toggle('hidden'); 
 newGameButtonDom.classList.toggle('hidden');
-
-
 
 // Helper functions
 function delay(ms) {
