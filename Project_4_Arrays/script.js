@@ -64,11 +64,16 @@ const inputLoanAmount = document.querySelector('.form__input--loan-amount');
 const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
 
-const displayMovements = function(movements){
+const displayMovements = function(movements, sort = false){
   
   containerMovements.innerHTML = ''; 
 
-  movements.forEach(function(mov, i){
+  const movs = sort ? movements
+                      .slice()
+                      .sort((a, b) => a - b)
+                    : movements; 
+
+  movs.forEach(function(mov, i){
     const type = mov > 0 ? `deposit` : `withdrawal`;
     const html = `
         <div class="movements__row">
@@ -80,7 +85,7 @@ const displayMovements = function(movements){
   })
 }
 
-displayMovements(account1.movements)
+// displayMovements(account1.movements)
 
 ///////////////////////////////////////////////
 ///////////////////////////////////////////////
@@ -322,6 +327,13 @@ console.log(account);
       }
     })
 
+    let sorted = false; 
+    btnSort.addEventListener(`click`, function(e){
+      e.preventDefault(); 
+      displayMovements(currentAccount.movements, !sorted); 
+    sorted = !sorted; 
+    })
+
     // const lastWithdrawl = movements.find(mov => mov < 0); 
     // console.log(lastWithdrawl)
 
@@ -330,3 +342,17 @@ console.log(account);
 
     // Every method
     // console.log(movements.every(mov => mov > 0)); 
+
+    //----------------
+    // Sorting Arrays
+    //----------------
+
+    const owners = accounts
+                    .map(account => account.owner.split(' ')[0])
+                    .sort(); 
+    
+    console.log(owners); 
+
+    movements.sort((a,b) => a -b )
+
+    console.log(movements); 
