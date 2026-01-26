@@ -2,17 +2,66 @@ console.log('SCRIPT LOADED');
 
 'use strict';
 
+// #region 1.) Arrays Data
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
 // BANKIST APP
 
-// Data
+// Data for array section
+// const account1 = {
+//   owner: 'Jonas Schmedtmann',
+//   movements: [200, 450, -400, 3000, -650, -130, 70, 1300],
+//   interestRate: 1.2, // %
+//   pin: 1111,
+//   type: `premium`
+// };
+
+// const account2 = {
+//   owner: 'Jessica Davis',
+//   movements: [5000, 3400, -150, -790, -3210, -1000, 8500, -30],
+//   interestRate: 1.5,
+//   pin: 2222,
+//   type: `basic`
+// };
+
+// const account3 = {
+//   owner: 'Steven Thomas Williams',
+//   movements: [200, -200, 340, -300, -20, 50, 400, -460],
+//   interestRate: 0.7,
+//   pin: 3333,
+//   type: `premium`
+// };
+
+// const account4 = {
+//   owner: 'Sarah Smith',
+//   movements: [430, 1000, 700, 50, 90],
+//   interestRate: 1,
+//   pin: 4444,
+//   type: `standard`
+// };
+
+// const accounts = [account1, account2, account3, account4];
+// #endregion
+
+// #region 2.)  Arrays for Numbers, Times, Dates section
 const account1 = {
   owner: 'Jonas Schmedtmann',
-  movements: [200, 450, -400, 3000, -650, -130, 70, 1300],
+  movements: [200, 455.23, -306.5, 25000, -642.21, -133.9, 79.97, 1300],
   interestRate: 1.2, // %
   pin: 1111,
-  type: `premium`
+
+  movementsDates: [
+    '2019-11-18T21:31:17.178Z',
+    '2019-12-23T07:42:02.383Z',
+    '2020-01-28T09:15:04.904Z',
+    '2020-04-01T10:17:24.185Z',
+    '2020-05-08T14:11:59.604Z',
+    '2020-05-27T17:01:17.194Z',
+    '2020-07-11T23:36:17.929Z',
+    '2020-07-12T10:51:36.790Z',
+  ],
+  currency: 'EUR',
+  locale: 'pt-PT', // de-DE
 };
 
 const account2 = {
@@ -20,28 +69,26 @@ const account2 = {
   movements: [5000, 3400, -150, -790, -3210, -1000, 8500, -30],
   interestRate: 1.5,
   pin: 2222,
-  type: `basic`
+
+  movementsDates: [
+    '2019-11-01T13:15:33.035Z',
+    '2019-11-30T09:48:16.867Z',
+    '2019-12-25T06:04:23.907Z',
+    '2020-01-25T14:18:46.235Z',
+    '2020-02-05T16:33:06.386Z',
+    '2020-04-10T14:43:26.374Z',
+    '2020-06-25T18:49:59.371Z',
+    '2020-07-26T12:01:20.894Z',
+  ],
+  currency: 'USD',
+  locale: 'en-US',
 };
 
-const account3 = {
-  owner: 'Steven Thomas Williams',
-  movements: [200, -200, 340, -300, -20, 50, 400, -460],
-  interestRate: 0.7,
-  pin: 3333,
-  type: `premium`
-};
+const accounts = [account1, account2];
 
-const account4 = {
-  owner: 'Sarah Smith',
-  movements: [430, 1000, 700, 50, 90],
-  interestRate: 1,
-  pin: 4444,
-  type: `standard`
-};
+// #endregion
 
-const accounts = [account1, account2, account3, account4];
-
-// Elements
+// #region 3.) Elements
 const labelWelcome = document.querySelector('.welcome');
 const labelDate = document.querySelector('.date');
 const labelBalance = document.querySelector('.balance__value');
@@ -68,21 +115,31 @@ const inputLoanAmount = document.querySelector('.form__input--loan-amount');
 const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
 
-const displayMovements = function(movements, sort = false){
+// #endregion
+
+
+const displayMovements = function(acc, sort = false){
   
   containerMovements.innerHTML = ''; 
 
-  const movs = sort ? movements
+  const movs = sort ? acc.movements
                       .slice()
                       .sort((a, b) => a - b)
-                    : movements; 
+                    : acc.movements; 
 
   movs.forEach(function(mov, i){
     const type = mov > 0 ? `deposit` : `withdrawal`;
+    const newDate = new Date(acc.movementsDates[i]);
+    const day = `${newDate.getDate()}`.padStart(2, 0);
+    const month = `${newDate.getMonth() + 1}`.padStart(2, 0)
+    const year = newDate.getFullYear()
+    const displayDate = `${day}/${month}/${year}`; 
+  
     const html = `
         <div class="movements__row">
           <div class="movements__type movements__type--${type}">${i + 1} ${type}</div>
-          <div class="movements__value">${mov}</div>
+          <div class="movements__date">${displayDate}</div>
+          <div class="movements__value">${mov.toFixed(2)}</div>
         </div>`;
 
     containerMovements.insertAdjacentHTML('afterbegin', html)
@@ -117,7 +174,7 @@ createUserNames(accounts);
 
 const updateUI = function(acc){
       //Display movements
-      displayMovements(acc.movements);
+      displayMovements(acc);
       // display balance
       calcPrintBalance(acc);
       // Display Summary
@@ -125,7 +182,8 @@ const updateUI = function(acc){
 }
 
 
-/////////////////////////////////////////////////
+
+// #region 4.) Array methods
 
 let arr = ['a', 'b', 'c', 'd', 'e']
 
@@ -194,9 +252,11 @@ currencies2.forEach(function(value, key, map){
 })
 
 
+
+
 const calcPrintBalance = function(acc){
   acc.balance = acc.movements.reduce((a, b) => a + b, 0); 
-  labelBalance.textContent = `$${acc.balance} USD`; 
+  labelBalance.textContent = `$${acc.balance.toFixed(2)} USD`; 
 }; 
 
 // calcPrintBalance(account1.movements); 
@@ -205,19 +265,19 @@ const calcDispalySummary = function(acc){
   const incomes = acc.movements
     .filter(move => move > 0)
     .reduce((a,b)=> a + b, 0); 
-  labelSumIn.textContent = `${incomes}`; 
+  labelSumIn.textContent = `${incomes.toFixed(2)}`; 
 
   const withdrawal = acc.movements
     .filter(move => move < 0)
     .reduce((a, b)=> a + b, 0); 
-  labelSumOut.textContent = `${withdrawal}`;
+  labelSumOut.textContent = `${withdrawal.toFixed(2)}`;
 
   const interest = acc.movements
     .filter(move => move > 0)
     .map(deposit => deposit * acc.interestRate / 100)
     .filter(move => move >= 1)
     .reduce((a,b) => a + b, 0); 
-    labelSumInterest.textContent = `$${interest}`
+    labelSumInterest.textContent = `$${interest.toFixed(2)}`
 } 
 
 // calcDispalySummary(account1.movements)
@@ -246,9 +306,16 @@ console.log(firstWithdrawal);
 console.log(accounts); 
 const account = accounts.find(acc => acc.owner === `Jessica Davis`); 
 console.log(account); 
+// #endregion
 
-// Event Handlers
+// #region 5.) Event Handlers
     let currentAccount
+
+    // Fake alays logged in for dev work
+    currentAccount = account1;
+    updateUI(currentAccount);
+    containerApp.style.opacity = 100;
+
 
     btnLogin.addEventListener('click', function(e){
       e.preventDefault(); 
@@ -260,6 +327,15 @@ console.log(account);
         //Display UI and welcome message. 
         labelWelcome.textContent = `Welcome back, ${currentAccount.owner.split(' ')[0]}`
         containerApp.style.opacity = 100; 
+
+        // Creating current date and time; 
+        const now = new Date(); 
+        const day = `${now.getDate()}`.padStart(2, 0);
+        const month = `${now.getMonth() + 1}`.padStart(2, 0)
+        const year = `${now.getFullYear() + 1}`.padStart(2, 0)
+        const hour = `${now.getHours() + 1}`.padStart(2, 0)
+        const mins = `${now.getMinutes() + 1}`.padStart(2, 0)
+        labelDate.textContent = `${day}/${month}/${year}, ${hour}:${mins}`; 
         
         // Clear Input Fields
         inputLoginUsername.value = inputLoginPin.value = ''; 
@@ -287,6 +363,10 @@ console.log(account);
           // Conduct Transfer
           currentAccount.movements.push(-amount); 
           reciverAcc.movements.push(amount); 
+          
+          // Add transfer date
+          currentAccount.movementsDates.push(new Date().toISOString());
+          reciverAcc.movementsDates.push(new Date().toISOString());
 
           // Update UI
           updateUI(currentAccount); 
@@ -319,13 +399,18 @@ console.log(account);
 
     btnLoan.addEventListener('click', function(e) {
       e.preventDefault(); 
-      const amount = Number(inputLoanAmount.value);
+      const amount = Math.floor(inputLoanAmount.value);
       if(
         amount > 0 && 
         currentAccount.movements.some(mov => mov >= amount * 0.1)
       ){
         // Add movement here
         currentAccount.movements.push(amount); 
+
+        // Add loan date
+        currentAccount.movementsDates.push(new Date().toISOString());
+
+        // Update the UI
         updateUI(currentAccount); 
         inputLoanAmount.value = ''; 
       }
@@ -347,10 +432,11 @@ console.log(account);
     // Every method
     // console.log(movements.every(mov => mov > 0)); 
 
+    // #endregion
+    
     //----------------
     // Sorting Arrays
     //----------------
-
     const owners = accounts
                     .map(account => account.owner.split(' ')[0])
                     .sort(); 
@@ -400,3 +486,123 @@ labelBalance.addEventListener(`click`, function(e){
   const movementsUI = Array.from(document.querySelectorAll(`.movements__value`), el =>  el.textContent.replace('$', '') );
   console.log(movementsUI)
 })
+
+
+/**
+ * ---------------------------------------------------------
+ *  Start of Numbers, Dates, Intl, and Timers Lessons. 
+ * ---------------------------------------------------------
+ */
+
+  // #region 6.) Example of numbers limit in JS thanks to its 64 bit base 2 system. 
+      console.log(.1 + .2); 
+      console.log(.1 + .2 === .3); 
+
+  // Conversion
+      console.log(Number(`14`));
+      console.log(+`14`); 
+
+  // Parsing
+      console.log(Number.parseInt(`30px`)); 
+
+  // Is NaN
+      console.log(Number.isNaN(`30`))
+      console.log(Number.isNaN(+`30`))
+      console.log(Number.isNaN(+`30X`))
+      console.log(Number.isNaN(30))
+      console.log(Number.isNaN(30/0))
+
+      console.log(Number.isFinite(23/0)); 
+
+  // Math Opperations 
+
+      console.log(Math.sqrt(25));
+      console.log(25 ** (1/2));
+      console.log(8 ** (1/3));
+
+      console.log(Math.PI * Number.parseFloat(`10px`) ** 2); 
+
+      console.log(Math.trunc(Math.random() * 6 + 1))
+      const ranomInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min
+      console.log(ranomInt(10, 20)); 
+
+  // Rounding Integers
+      console.log(Math.trunc(23.2));
+      console.log(Math.round(23.9)); 
+      console.log(Math.ceil(23.9)); 
+      console.log(Math.floor(2.99)); 
+
+  // Rounding Floats
+      console.log((2.7).toFixed(0)); 
+      console.log((2.7).toFixed(3)); 
+      console.log(+(2.745).toFixed(2)); 
+
+  // Modulo Operator 
+      console.log(5 % 2); 
+      console.log( 5 / 2); 
+
+  // Numeric Separator
+
+      const diameter = 287_400_000_000
+      console.log(diameter); 
+
+      const priceCents = 345_99; 
+      console.log(priceCents); 
+
+      const transferFee = 15_00; 
+
+      console.log(Number(`230_000`)) // wont work js can't parse it. 
+
+  // BigInt
+      console.log(2 ** 53 - 1);
+      console.log(Number.MAX_SAFE_INTEGER); 
+
+      //BigInt in action
+      console.log(99999999999999999999999999999999999999999n)
+      console.log(BigInt(9999999999))
+
+
+  // Dates and Times
+    // Creating a date
+
+    // const now = new Date()
+    // console.log(now); 
+    // console.log(new Date(account1.movementsDates[0]));
+    // console.log(new Date(2027, 10, 19, 15, 23,5))
+    // console.log(new Date(0)) // start of the js counter
+    // console.log(new Date(3 * 24 * 60 * 60 * 1000)); // time stamp of third day
+
+    // Workign with dates
+    const future = new Date(2037, 10, 19, 15, 23); 
+    console.log(future); 
+    console.log(future.getFullYear()); 
+    console.log(future.getMonth()); 
+    console.log(future.getDate()); 
+    console.log(future.getDay()); 
+    console.log(future.getMinutes()); 
+    console.log(future.getSeconds()); 
+    console.log(future.toISOString()); 
+    console.log(future.getTime());
+    
+    console.log(new Date(2142274980000))
+
+    future.setFullYear(2050);
+    console.log(future); 
+    
+    // #endregion
+    
+
+// #region 7. Date Functions in Bankis
+/**
+ * -----------------------------------------------
+ *  Functions for the Bankist app
+ * -----------------------------------------------
+ */
+
+
+
+
+// #endregion
+
+
+

@@ -116,7 +116,7 @@ testResults.length = 0;
 // YOUR TASKS:
 // 1. Loop over the array containing dog objects, and for each dog, calculate the recommended food portion (recFood) and add it to the object as a new property. Do NOT create a new array, simply loop over the array (We never did this before, so think about how you can do this without creating a new array).
     dogs.forEach((dog)=>{
-        dog.recFood = dog.weight ** 0.75 * 28;
+        dog.recFood = Math.floor(dog.weight ** 0.75 * 28);
         console.log(dog); 
     })
 
