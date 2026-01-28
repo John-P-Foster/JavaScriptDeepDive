@@ -210,6 +210,37 @@ const updateUI = function(acc){
       calcDispalySummary(acc);
 }
 
+const startLogOutTimer = function(){
+  // Set time to 5 minutes
+  let time = 120; 
+
+  const tick = function(){
+
+    const min = String(Math.floor(time / 60)).padStart(2, '0')
+    const sec = String(time % 60).padStart(2, '0'); 
+  
+    
+    // In each call, print the remaining time to the UI
+    labelTimer.textContent = `${min}:${sec}`; 
+
+      
+    // When 0 seconds, stop timer and log out the user. 
+      if(time === 0){
+        clearInterval(timer);
+        labelWelcome.textContent = `Log in to get Started`;
+        containerApp.style.opacity = 0; 
+      }
+
+    // Decrease 1s
+    time--
+    
+  }
+
+  // Call the timer every second
+  const timer = setInterval(tick, 1000)
+  return timer; 
+
+}
 
 
 // #region 4.) Array methods
@@ -338,12 +369,12 @@ console.log(account);
 // #endregion
 
 // #region 5.) Event Handlers
-    let currentAccount
+    let currentAccount , timer; 
 
     // Fake alays logged in for dev work
-    currentAccount = account1;
-    updateUI(currentAccount);
-    containerApp.style.opacity = 100;
+    // currentAccount = account1;
+    // updateUI(currentAccount);
+    // containerApp.style.opacity = 100;
 
 
     btnLogin.addEventListener('click', function(e){
@@ -382,6 +413,10 @@ console.log(account);
         inputLoginUsername.value = inputLoginPin.value = ''; 
         inputLoginPin.blur(); 
 
+        if(timer) clearInterval(timer); 
+
+        timer = startLogOutTimer();
+
         // Update the page
         updateUI(currentAccount); 
 
@@ -411,6 +446,10 @@ console.log(account);
 
           // Update UI
           updateUI(currentAccount); 
+
+          // Reset the timer
+          clearInterval(timer); 
+          timer = startLogOutTimer();
         }
     })
 
@@ -452,10 +491,15 @@ console.log(account);
         // Add loan date
         currentAccount.movementsDates.push(new Date().toISOString());
 
+        // Reset logout Timer
+        clearInterval(timer); 
+        timer = startLogOutTimer();
+
         // Update the UI
         updateUI(currentAccount); 
         inputLoanAmount.value = ''; 
       }, 3000)
+
       }
     })
 
