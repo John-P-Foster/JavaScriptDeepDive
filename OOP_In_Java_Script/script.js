@@ -212,33 +212,53 @@ Person.hey = function(){
     sophia.calcAge(); 
 
     class Account {
+        locale = navigator.language; // public field
+        bank = `Bankist`; // public field; 
+
+        #movements = []// private field; 
+        #pin; // private field; 
+
         constructor(owner, currency, pin){
             this.owner = owner; 
             this.currency = currency; 
-            this.pin = pin; 
-            this.movements = [];
-            this.locale = navigator.language; 
+            this.#pin = pin; 
+            // this.movements = [];
+            // this.locale = navigator.language; 
 
             console.log(`Thanks for opening an account ${this.owner}`); 
         }
 
+        // Private Interface
+        
+        #appoveLoan(val){
+            return true; 
+        }
+
+        // Public Interface (API);
+        getMovements(){
+            return [...this.#movements]; 
+        }
+
         deposit(val){
-            this.movements.push(val);
+            this.#movements.push(val);
+            return this
         }
 
         withdrawl(val){
             this.deposit(-val);
-        }
-
-        appoveLoan(val){
-            return true; 
+            return this
         }
 
         requestLoan(val){   
-            if(this.appoveLoan(val)){
+            if(this.#appoveLoan(val)){
                 this.deposit(val);
                 console.log(`Loan approved`); 
             }
+            return this
+        }
+
+        static test(){
+            console.log(`This is called on the Account class directly!`)
         }
     }
 
@@ -246,7 +266,9 @@ Person.hey = function(){
     acc1.deposit(250); 
     acc1.withdrawl(140); 
     acc1.requestLoan(1000); 
-    console.log(acc1); 
+    // acc1.#approveLoav();
+    Account.test(); 
+    console.log(acc1); ``
 //#endregion
 
 //#region Coding Challenge 3
@@ -271,4 +293,3 @@ Person.hey = function(){
     tesla.chargeBattery(120); 
     console.log(tesla); 
 //#endregion
-
