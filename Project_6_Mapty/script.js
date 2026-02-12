@@ -86,7 +86,7 @@
                 closeOnClick: false,
                 className: `${workout.type}-popup`
             }))
-            .setPopupContent(`workout`)
+            .setPopupContent(`${workout.type === `running` ? `🏃‍♂️` : `🚴‍♀️`} ${workout.description}`)
             .openPopup();
         }
 
@@ -137,6 +137,13 @@
             form.insertAdjacentHTML(`afterend`, html)
         }
 
+        #hideForm(){
+            inputDistance.value = inputDuration.value = inputCadence.value = inputElevation.value = ''
+            form.style.display = 'none'; 
+            form.classList.add(`hidden`);
+            setTimeout(()=> form.style.display = `grid`, 1000)
+        }
+
 
         #newWorkOut(e){
 
@@ -174,8 +181,8 @@
             this.#renderWorkOut(workout); 
 
             // Clear input fields and hide form
-                inputDistance.value = inputDuration.value = inputCadence.value = inputElevation.value = ''
-                form.classList.add(`hidden`);
+            this.#hideForm(); 
+
 
         }
 
